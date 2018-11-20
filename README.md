@@ -1,6 +1,7 @@
 # Overview
-
-tracks-prototype.html: prototype of how visualizing and dragging a mp3 file will look
+12/20/2018
+1) tracks-prototype-sw.html: try to load beat_file with D3.js
+2) tracks-sw-for (with tracks-sw.html): try to use for loop to process array of songs.
 
 
 # Initial demo bootup:
