@@ -1,4 +1,4 @@
-var filename =["source_audio/01-SW-042017.txt",
+filename =["source_audio/01-SW-042017.txt",
                "source_audio/02-SW-062018.txt"];
 var i;
 
@@ -7,8 +7,11 @@ function dragged(d) {
   d3.select(this).attr("transform", 'translate('+d.x+','+this.getCTM().f+')');
 };
 
-// for(i=0; i<filename.length; i++){
-  d3.json(filename[0],function(data){
+ii=0;
+
+for(ii=0; ii<filename.length; ii++){
+      console.log(filename.length);
+    d3.json(filename[ii],function(data){
       var xArray=data.beat_list;
       var bpmi=data.bpm;
       bpmi=d3.format(".0f")(bpmi);
@@ -23,14 +26,11 @@ function dragged(d) {
       var axisScale = d3.scaleLinear()
                         .domain([xMin,xMax])
                         .range([0,1000]);
-      var axisScale01 = 1000/(xMax-xMin);
-      console.log(axisScale);
-      console.log(axisScale01);
       var xScale = 1000/xMax;
       var xStart = xScale*xArray[0];
-      var yStart = 30;
+      var yStart = 30+(ii-1)*90;
       var height = 85;
-      var yAxis =yStart+height;
+      var yAxis =yStart+height*ii;
       var xAxis = d3.axisBottom().scale(axisScale);
       var svg = d3.select('svg');
 
@@ -53,9 +53,10 @@ function dragged(d) {
                 .call(xAxis);
 
       svg.append('text')
-                .attr('x', 10).attr('y', 20)
+                .attr('x', 10).attr('y', 20+yStart)
                 .style('fill', 'steelblue')
                 .style('font-size', '12px')
                 .style('font-weight', 'bold')
                 .text(data.beat_file + ';  Duration = '+M+':'+S+';  bpm= '+ bpmi );
-   });
+   })
+ };

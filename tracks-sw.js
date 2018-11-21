@@ -20,18 +20,19 @@ d3.json(filename01)
                         .range([0,1000]);
       var xScale = 1000/xMax;
       var xStart = xScale*xArray[0];
+      var svg = d3.select('svg');
+      var xAxis = d3.axisBottom().scale(axisScale);
 
-      d3.select('svg').selectAll('g')
+      svg.selectAll('g')
         .data(xArray)
         .enter().append('g')
           .attr('transform', function(d) {return 'translate(0,30)';})
 
-          .selectAll('line.line1')
+          .selectAll('line')
               .data(xArray)
               .enter().append('line')
                 .style('stroke', 'blue')
                 // .scale(axisScale)
-                .attr('class', 'line.line1')
                 .attr('stroke-width', 1)
                 .attr('x1', function(d) {return d*xScale})
                 .attr('x2', function(d) {return d*xScale})
@@ -39,18 +40,16 @@ d3.json(filename01)
                 .attr('y2', 75)
                 .exit();
 
-          var svg = d3.select('svg');
-          var xAxis = d3.axisBottom().scale(axisScale);
-          var xAxisDraw=svg.append("g")
-                           .attr('transform', function(d) {return 'translate('+xStart+',105)';})
-                           .call(xAxis);
+        svg.append("g")
+                .attr('transform', function(d) {return 'translate('+xStart+',105)';})
+                .call(xAxis);
 
-          var txet01=svg.append('text')
-                        .attr('x', 10).attr('y', 20)
-                        .style('fill', 'steelblue')
-                        .style('font-size', '12px')
-                        .style('font-weight', 'bold')
-                        .text(filename01 + ';  Duration = '+M+':'+S+';  bpm= '+ bpm01 );
+        svg.append('text')
+                .attr('x', 10).attr('y', 20)
+                .style('fill', 'steelblue')
+                .style('font-size', '12px')
+                .style('font-weight', 'bold')
+                .text(filename01 + ';  Duration = '+M+':'+S+';  bpm= '+ bpm01 );
 });
 
 var filename02="source_audio/02-SW-062018.txt";
@@ -74,37 +73,35 @@ d3.json(filename02)
                             .range([0,1000]);
           var xScale = 1000/xMax;
           var xStart = xScale*xArray[0];
+          var svg = d3.select('svg');
+          var xAxis = d3.axisBottom().scale(axisScale);
 
-          d3.select('svg').selectAll('g')
+          svg.selectAll('g')
             .data(xArray)
             .enter().append('g')
               .attr('transform', function(d) {return 'translate(0,140)';})
 
-              .selectAll('line')
-                  .data(xArray)
-                  .enter().append('line')
-                    .style('stroke', 'green')
-                    // .scale(axisScale)
-                    .attr('stroke-width', 1)
-                    .attr('x1', function(d) {return d*xScale})
-                    .attr('x2', function(d) {return d*xScale})
-                    .attr('y1', 0)
-                    .attr('y2', 75)
+              .selectAll('rect')
+                .data(xArray)
+                .enter().append('rect')
+                    .attr('fill', 'green')
+                    .attr('x', function(d) {return d*xScale})
+                    .attr('y', 0)
+                    .attr('width',1)
+                    .attr('height', 75)
                     .exit();
                     // update(); remove();
 
-          var svg = d3.select('svg');
-          var xAxis = d3.axisBottom().scale(axisScale);
-          var xAxisDraw=svg.append("g")
-                           .attr('transform', function(d) {return 'translate('+xStart+',215)';})
-                           .call(xAxis);
+          svg.append("g")
+                    .attr('transform', function(d) {return 'translate('+xStart+',215)';})
+                    .call(xAxis);
 
-          var txet01=svg.append('text')
-                        .attr('x', 10).attr('y', 20)
-                        .style('fill', 'steelblue')
-                        .style('font-size', '12px')
-                        .style('font-weight', 'bold')
-                        .attr('transform', function(d) {return 'translate(0,115)';})
-                        .text(filename02 + 'Duration = '+M+':'+S+';  bpm= '+ bpm01 );
+          svg.append('text')
+                    .attr('x', 10).attr('y', 20)
+                    .style('fill', 'steelblue')
+                    .style('font-size', '12px')
+                    .style('font-weight', 'bold')
+                    .attr('transform', function(d) {return 'translate(0,115)';})
+                    .text(filename02 + 'Duration = '+M+':'+S+';  bpm= '+ bpm01 );
 
 });
