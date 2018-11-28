@@ -1,4 +1,4 @@
-filename =["source_audio/01-SW-042017.txt",
+var filename =["source_audio/01-SW-042017.txt",
                "source_audio/02-SW-062018.txt"];
 var i;
 
@@ -9,9 +9,11 @@ function dragged(d) {
 
 ii=0;
 
-for(ii=0; ii<filename.length; ii++){
-      console.log(filename.length);
-    d3.json(filename[ii],function(data){
+// for(ii=0; ii<filename.length; ii++){
+//       console.log(filename.length);
+//       console.log(ii);
+    d3.json(filename[0],function(data){
+      // console.log('ii=',ii);
       var xArray=data.beat_list;
       var bpmi=data.bpm;
       bpmi=d3.format(".0f")(bpmi);
@@ -28,7 +30,7 @@ for(ii=0; ii<filename.length; ii++){
                         .range([0,1000]);
       var xScale = 1000/xMax;
       var xStart = xScale*xArray[0];
-      var yStart = 30+(ii-1)*90;
+      var yStart = 30+90;
       var height = 85;
       var yAxis =yStart+height*ii;
       var xAxis = d3.axisBottom().scale(axisScale);
@@ -58,5 +60,5 @@ for(ii=0; ii<filename.length; ii++){
                 .style('font-size', '12px')
                 .style('font-weight', 'bold')
                 .text(data.beat_file + ';  Duration = '+M+':'+S+';  bpm= '+ bpmi );
-   })
- };
+   });
+ // };
