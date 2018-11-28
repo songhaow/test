@@ -8,3 +8,7 @@ line {
   stroke: green;
   stroke-width: 1px;
 }
+line.xaxis {
+  stroke: yellow;
+  stroke-width: 6px;
+}
