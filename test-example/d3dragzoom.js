@@ -52,7 +52,10 @@ vis.append("svg:line")
   .attr("y1", mh - y(0))
   .attr("y2", mh - y(0))
   .on("mousedown", function(d) {
-    var p = d3.vis.mouse(vis[0][0]);
+    debugger;
+
+    var p = d3.select("svg").mouse(vis[0][0]);
+
     mouseDownX = x.invert(p[0]); //present mouse click x value,
     takeoverOriginalX = x; //take over original x domain, [1,9]
   });
@@ -62,7 +65,7 @@ vis.append("svg:line")
 d3.select('body')
   .on("mousemove", function(d) {
     if (!isNaN(mouseDownX)) {
-      var p = d3.vis.mouse(vis[0][0]),
+      var p = d3.select("svg").mouse(vis[0][0]),
           mouseUpX = p[0];
       if (mouseUpX != 0) {
         newMaxX = mw * (mouseDownX - takeoverOriginalX.domain()[0])/mouseUpX + takeoverOriginalX.domain()[0];
