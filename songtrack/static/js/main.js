@@ -42,11 +42,11 @@ xhr.send();
 var trackInputInfoList =  [
     {
         color: 'red',
-        fname: 'source_audio/01-SW-042017.txt',
+        fname: '../../source_audio/01-SW-042017.txt',
     },
     {
         color: 'green',
-        fname: 'source_audio/02-SW-062018.txt',
+        fname: '../../source_audio/02-SW-062018.txt',
     },
 
 ];
