@@ -1,44 +1,36 @@
-/* Main function */
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-const audioCtx = new AudioContext();
-// const track1Element = document.querySelector('#track1');
-// const trackNode = audioCtx.createMediaElementSource(track1Element);
-// trackNode.connect(audioCtx.destination);
-var audioSource = null;
-var track1AudioBuffer = null;
+// Import commands allow us to import functions and modules from other
+// javascript files -- like we do in python
+import {AudioSourceInterface} from './api/audio_source.js';
+import {TrackAudioManager} from './audio_logic/audio_context_logic.js';
 
-var resetAudioSource = (audioBuffer) => {
-  audioSource = audioCtx.createBufferSource();
-  audioSource.buffer = audioBuffer;
-  audioSource.connect(audioCtx.destination);
-};
+/**
+ * Here we create an instance of the class TrackAudioManager.  The track
+ * audio manager will keep the tracks that we want to play and expose
+ * the functions to play, stop, and seek the track position.
+ */
+var trackAudioManager = new TrackAudioManager();
 
-
+// When the user presses the play / stop button, we tell the
+// trackAudioManager instance what to do.
 document.querySelector('#play1Button').onclick = function() {
-  audioSource.start(0, 30);
+  trackAudioManager.playTrack1();
 };
 document.querySelector('#pause1Button').onclick = function() {
-  audioSource.stop();
-  resetAudioSource(track1AudioBuffer);
+  trackAudioManager.stopTrack1();
 };
 
-
-var xhr = new XMLHttpRequest();
-xhr.open('GET', 'http://localhost:8080/song', true);
-xhr.responseType = 'arraybuffer';
-xhr.onload = function () {
-  console.log('got response')
-  audioCtx.decodeAudioData(xhr.response).then(
-    audioBuffer => {
-      console.log('decoded')
-      track1AudioBuffer = audioBuffer;
-      resetAudioSource(track1AudioBuffer);
-    }
-  )
-};
-xhr.send();
+/**
+ * Here, we make a call to the python flask server to get the track
+ * audio information.  Once the audio information comes back and is
+ * decoded, we load it into track1.  We pass it the trackAudioManager
+ * because that's the track manager object we want to load the audio
+ * information into.
+ */
+AudioSourceInterface.loadBackendTrack(trackAudioManager);
 
 
+
+// This is the original code to render the UI interface
 var trackInputInfoList =  [
     {
         color: 'red',
