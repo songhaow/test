@@ -11,33 +11,28 @@ var trackInputInfoList =  [
 
 ];
 
-var svg = d3.select('svg');
-var trackPaddingPx = 45;
-var trackHeightPx = 60;
+width=1000;
+height=250;
+var trackPaddingPx = 40;
+var trackHeightPx = 65;
+
+var svg = d3.select("#chartForTrack")
+          .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .style('background-color', 'lightgray')
+            .attr("pointer-events", "all")
+          .append("g")
+            .attr("transform", "translate(0,30)");
 
 trackInputInfoList.forEach(function(trackInputInfo, i) {
     var fname = trackInputInfo.fname;
     var color = trackInputInfo.color;
-    var trackTopY = i * (trackPaddingPx + trackHeightPx) + trackPaddingPx;
+    var trackTopY = i * (trackPaddingPx + trackHeightPx);
     var trackBottomY = trackTopY + trackHeightPx;
-
     var trackDisplayGroup = svg.append('g')
-
     renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, color);
 });
-
-/**
- * @param {int} timeInSeconds
- */
-function secondsToTimeString(timeInSeconds) {
-    var timeSecond=timeInSeconds%60.0;
-    var timeMinute=timeInSeconds/60;
-    timeMinute=Math.floor(timeMinute);
-    timeSecond=Math.floor(timeSecond);
-    var M = timeMinute.toString();
-    var S = timeSecond.toString();
-    return M + ':' + S;
-};
 
 /**
  * @param {svg group} trackDisplayGroup: SVG group that the track info should be created in
@@ -56,8 +51,8 @@ function renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, c
 
           var axisScale = d3.scaleLinear()
                             .domain([xMin,xMax])
-                            .range([0,1000]);
-          var xScale = 1000/xMax;
+                            .range([0,width]);
+          var xScale = width/xMax;
           var xStart = xScale*beatListArray[0];
           var xAxis = d3.axisBottom().scale(axisScale);
 
@@ -87,3 +82,15 @@ function renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, c
           beatLines.exit().remove();
     });
 }
+/**
+ * @param {int} timeInSeconds
+ */
+function secondsToTimeString(timeInSeconds) {
+    var timeSecond=timeInSeconds%60.0;
+    var timeMinute=timeInSeconds/60;
+    timeMinute=Math.floor(timeMinute);
+    timeSecond=Math.floor(timeSecond);
+    var M = timeMinute.toString();
+    var S = timeSecond.toString();
+    return M + ':' + S;
+};

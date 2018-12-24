@@ -1,14 +1,15 @@
 /* Main function */
-var w=1000;
-var h=300;
+var width=1000;
+var height=250;
+barheight=75;
 // var svg = d3.select("#chartForTrack")
 var svg=d3.select('svg')
           .append("svg:svg")
-            .attr("width", w)
-            .attr("height", h)
-            .attr("pointer-events", "all")
+            .attr("width", width)
+            .attr("height", height)
+            .style('background-color', 'yellow')
           .append("svg:g")
-            .attr("transform", "translate(5,150)");
+            .attr("transform", "translate(0,30)");
 
 var filename02="source_audio/02-SW-062018.txt";
 d3.json(filename02)
@@ -27,47 +28,28 @@ d3.json(filename02)
           var axisScale = d3.scaleLinear()
                             .domain([xMin,xMax])
                             .range([0,1000]);
-          var xScale = 1000/xMax;
+          var xScale = width/xMax;
           var xStart = xScale*xArray[0];
           var xAxis = d3.axisBottom().scale(axisScale);
 
-/////////////////////////////////////////////////////////////////////
-
-          var zoom = d3.zoom()
-                      .scaleExtent([1, 1.2])
-                      .on("zoom", zoomed);
-
-          var slider = d3.select('body')
-                         // .append("p")
-                         .append("input")
-                         .datum(0,300)
-                         .attr("type", "range")
-                         .attr("value", zoom.scaleExtent()[0])
-                         .attr("min", zoom.scaleExtent()[0])
-                         .attr("max", zoom.scaleExtent()[1])
-                         .attr("step", (zoom.scaleExtent()[1] - zoom.scaleExtent()[0]) / 100)
-                         .on("input", slided);
-
-          var scalewidth;
-          function slided(d) {
-                                zoom.scaleTo(svg, d3.select(this).property("value"));
-                                // scalewidth=d3.select(this).property("value");
-                                return scalewidth;
-                                }
-
-          function zoomed() {
-                               const currentTransform = d3.event.transform;
-                               container.attr("transform", currentTransform);
-                               slider.property("value", currentTransform.k);
-                              }
-
-          // d3.select("svg").append("svg")
-          //                .attr("width", w)
-          //                .attr("height", h)
-          //             .append("g")
-          //                .attr("transform", "translate(0, 240)")
-          //                .call(zoom);
-
+////DRAG//////////////////////////////////////////////////////////
+       function dragstarted(d) {
+             d3.select(this).raise().classed("active", true);
+             startX=d3.event.x;
+             console.log('startX: ', startX);
+             return startX
+           }
+       function dragged(d) {
+             d.x = d3.event.x;
+             d3.select(this).attr("transform", 'translate('+d.x+','+this.getCTM().f+')');
+           };
+       function dragended(d) {
+             d3.select(this).classed("active", false);
+             endX=d3.event.x;
+             console.log('endX: ', endX);
+             return endX
+           }
+////////////////////////////////////////////////////////////////////
           var container = svg.append("g")
                   .attr('transform', function(d) {return 'translate(0,0)';});
 
