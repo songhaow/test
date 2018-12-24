@@ -4,7 +4,7 @@
 <html>
 
 <body>
-  <svg width="560" height="500" style="border: 1px solid black;">
+  <svg width="560" height="300" style="border: 1px solid black;">
   </svg>
   <div id="displayButton">
     hit me
@@ -30,43 +30,78 @@ const track = audioCtx.createMediaElementSource(audioElement);
 // connect track to destination
 track.connect(audioCtx.destination);
 
-/**
- * Dragged event handler function -- every time the user mouse registers a drag
- * event (i.e. it moves a pixel or two with the click button still down), this
- * function executes and handles moving the actual rendered waveform object.
- */
-function dragged(d) {
-  d.x = d3.event.x;
-  d3.select(this).attr("transform", 'translate('+d.x+','+this.getCTM().f+')');
-};
-/**
- * Main function
- */
+////DRAG//////////////////////////////////////////////////////////
+ function dragstarted(d) {
+   d3.select(this).raise().classed("active", true);
+   startX=d3.event.x;
+   console.log('startX: ', startX);
+   return startX
+ }
+ function dragged(d) {
+   d.x = d3.event.x;
+   d3.select(this).attr("transform", 'translate('+d.x+','+this.getCTM().f+')');
+ }
+ function dragended(d) {
+   d3.select(this).classed("active", false);
+   endX=d3.event.x;
+   console.log('endX: ', endX);
+   return endX
+ }
+
+ /////ZOOM/////////////////////////////////////////////////////////////////////////////
+ var scalewidth;
+ var zoom = d3.zoom()
+                    .scaleExtent([1, 1.1])
+                    .on("zoom", zoomed);
+
+ var slider = d3.select('body')
+                       .append("p")
+                       .append("input")
+                       .datum({})
+                       .attr("type", "range")
+                       .attr("value", zoom.scaleExtent()[0])
+                       .attr("min", zoom.scaleExtent()[0])
+                       .attr("max", zoom.scaleExtent()[1])
+                       .attr("step", (zoom.scaleExtent()[1] - zoom.scaleExtent()[0])/100)
+                       .on("input", slided);
+
+function slided(d) {
+                      zoom.scaleTo(svg, d3.select(this).property("value"));
+                      scalewidth=d3.select(this).property("value");
+                      return scalewidth;
+                           }
+function zoomed() {
+                      const currentTransform = d3.event.transform;
+                      group.attr("transform", currentTransform);
+                      slider.property("value", currentTransform.k);
+                          }
+//////////////////////////////////////////////////////////////////////////////
+
+ // * Main function
+
 function mainLoad() {
   var trackInfo = getTrackInfo();
 
   console.log(trackInfo);
 
-  // Setup D3 library: https://github.com/d3/d3/wiki/Tutorials
-  // D3 binds a javascript object (list of points, to a visualization)
-  d3.select('svg').selectAll('g')
+var group=d3.select('svg').selectAll('g')
     .data(trackInfo)
     .enter().append('g')
       .attr('x', 0)
       .attr('transform', function(d) {return 'translate(10,' + d.y + ')';})
-      .attr('width', function(d) {return d.width;})
-      .attr('height', 90)
-      .attr('id', function(d) {return d.id;})
-    .call(d3.drag().on('drag', dragged))
-    .selectAll('rect')
+    .call(d3.drag()
+      .on("start", dragstarted)
+      .on('drag', dragged)
+      .on("end", dragended));
+
+group.selectAll('rect')
       .data(function(d) {return d.trackData;})
       .enter().append('rect')
         .attr('fill', 'black')
         .attr('width', 2)
-        // .attr('height', function(d) {return d;})
         .attr('height', 90)
         .attr('x', function(d, i) {return d*8;});
-  // console.log(d.y);
+
   d3.select('#displayButton').on("click", displayInfo);
 
   function displayInfo() {
@@ -82,26 +117,6 @@ function mainLoad() {
     }};
 
 };
-
-/**
-* Fake track information. This will be replaced with real track information
-//  * eventually.
-//  */
-// // function getTrackInfo() {
-// //     return [
-// //       {
-// //         id: 'track1',
-// //         y: 0,
-// //         width: 50,
-// //         trackData: d3.json('source_audio/01-SW-042017.txt',function(data){return data.beat_list;})
-// //       },
-// //       {id: 'track2',
-// //         y: 60,
-// //         width: 50,
-// //         trackData: d3.json('source_audio/02-SW-062018.txt',function(data){return data.beat_list;})
-// //       }
-// //     ]
-// //     };
 
 function getTrackInfo() {
   return [
