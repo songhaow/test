@@ -1,13 +1,12 @@
 # Overview
-12/20/2018
-1) tracks-prototype-sw.html: try to load beat_file with D3.js
-2) tracks-sw-for (with tracks-sw.html): try to use for loop to process array of songs.
+Main project is completely contained in the songtrack/ folder
 
 
 # Initial demo bootup:
-1) at the local directory:
-2) run `python -m http.server 8000`
-3) access at `http://localhost:8000/tracks-prototype.html`
+At the root directory:
+1) in one terminal tab, run `python -m http.server 8000`
+2) in another terminal tab, run `python songtrack/songtrack_backend.py`
+2) access at `http://localhost:8000/songtrack/static/index.html`
 
 
 # Todo:
