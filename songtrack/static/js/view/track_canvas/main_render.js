@@ -104,15 +104,19 @@ function renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, c
 
     var trackLinesGroup = trackDisplayGroup.append('g');
     renderDraggableTrack(
-      trackLinesGroup, beatListArray, color, trackTopY, trackBottomY,
-      xMax, xScale);
+      trackLinesGroup, beatListArray, color, trackTopY, trackBottomY, xScale);
   });
 }
 
 
+/**
+ * @param xScale: how much to "zoom in" x axis
+ */
 function renderDraggableTrack(
-        trackLinesGroup, beatListArray, color, trackTopY, trackBottomY, xMax,
+        trackLinesGroup, beatListArray, color, trackTopY, trackBottomY,
         xScale) {
+  // X position of the last beat for the track
+  var xMax = d3.max(beatListArray) * xScale;
 
   // Add lines
   trackLinesGroup.attr('class', 'trackLinesGroup');
