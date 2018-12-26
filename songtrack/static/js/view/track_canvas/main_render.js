@@ -15,24 +15,12 @@ export const TrackCanvasInterface = {
     ];
 
     var svg = d3.select('svg');
-    var trackPaddingPx = 45;
-    var trackHeightPx = 60;
 
-    trackInputInfoList.forEach(function(trackInputInfo, i) {
-      var fname = trackInputInfo.fname;
-      var color = trackInputInfo.color;
-      var trackTopY = i * (trackPaddingPx + trackHeightPx) + trackPaddingPx;
-      var trackBottomY = trackTopY + trackHeightPx;
-
-      var trackDisplayGroup = svg.append('g');
-      trackDisplayGroup.attr('class', 'trackDisplayGroup');
-
-      renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, color);
-    });
+    rerenderTracks(svg, trackInputInfoList);
 
     renderPlayCursor(svg);
 
-    bindSvgEventHandlers(svg);
+    bindEventHandlers(svg, trackInputInfoList);
   }
 };
 
@@ -42,7 +30,7 @@ export const TrackCanvasInterface = {
  * SVG event handling here so it will be easy to see and manage possible
  * different events we want to have.
  */
-function bindSvgEventHandlers(mainSvgEl) {
+function bindEventHandlers(mainSvgEl, trackInputInfoList) {
   // Play Cursor is a <rect> element with id "playCursorRect". Using HTML id
   // attr because there should only be one cursor.
   var playCursorRect = mainSvgEl.select('#playCursorRect');
@@ -53,8 +41,32 @@ function bindSvgEventHandlers(mainSvgEl) {
     var x = playCursorRect.attr('destX');
     playCursorRect.attr('x', x);
   });
+
+  // Zoom event handler bindings
+  d3.select('#zoomSlider')
+    .on('change', function(evt) {
+      console.log(d3.event.target.value);
+      rerenderTracks(mainSvgEl, trackInputInfoList);
+    });
 }
 
+function rerenderTracks(svg, trackInputInfoList) {
+  svg.selectAll('g').remove();
+
+  var trackPaddingPx = 45;
+  var trackHeightPx = 60;
+  trackInputInfoList.forEach(function(trackInputInfo, i) {
+    var fname = trackInputInfo.fname;
+    var color = trackInputInfo.color;
+    var trackTopY = i * (trackPaddingPx + trackHeightPx) + trackPaddingPx;
+    var trackBottomY = trackTopY + trackHeightPx;
+
+    var trackDisplayGroup = svg.append('g');
+    trackDisplayGroup.attr('class', 'trackDisplayGroup');
+
+    renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, color);
+  });
+}
 
 /**
  * Render the blinking play cursor initially at position 0
