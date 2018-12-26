@@ -1,20 +1,22 @@
-from flask import Flask
+from flask import Flask, render_template
 # CORS python package is standardized code that will allow webpages from other
 # domains to access resources of this application server
 # - read -- https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 from flask_cors import CORS
 
-app = Flask(__name__)
+TEMPLATES_FOLDER = 'static'
+SOURCE_AUDIO_FOLDER = '../souce_audio'
+
+
+app = Flask(__name__, template_folder=TEMPLATES_FOLDER)
 # By applying CORS to the flask-python application object, we allow (by default)
 # all websites domains to access content on this server
 CORS(app)
 
-SOURCE_AUDIO_FOLDER = '../souce_audio'
-
 
 @app.route('/')
 def hello():
-    return 'Hello World!'
+    return render_template('index.html')
 
 @app.route('/song')
 def handle_song():

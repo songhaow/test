@@ -1,7 +1,7 @@
 // Import commands allow us to import functions and modules from other
 // javascript files -- like we do in python
-import {AudioSourceInterface} from './api/audio_source.js';
-import {TrackAudioManager} from './audio_logic/audio_context_logic.js';
+import {AudioSourceInterface} from '/static/js/api/audio_source.js';
+import {TrackAudioManager} from '/static/js/audio_logic/audio_context_logic.js';
 
 /**
  * Here we create an instance of the class TrackAudioManager.  The track
@@ -29,18 +29,16 @@ document.querySelector('#pause1Button').onclick = function() {
 AudioSourceInterface.loadBackendTrack(trackAudioManager);
 
 
-
 // This is the original code to render the UI interface
 var trackInputInfoList =  [
     {
         color: 'red',
-        fname: '../../source_audio/01-SW-042017.txt',
+        fname: '/static/source_audio/01-SW-042017.txt',
     },
     {
         color: 'green',
-        fname: '../../source_audio/02-SW-062018.txt',
+        fname: '/static/source_audio/02-SW-062018.txt',
     },
-
 ];
 
 var svg = d3.select('svg');

@@ -1,5 +1,5 @@
 // todo: don't export audioCtx directly
-import {audioCtx, TrackAudioManager} from '/songtrack/static/js/audio_logic/audio_context_logic.js';
+import {audioCtx, TrackAudioManager} from '/static/js/audio_logic/audio_context_logic.js';
 
 export const AudioSourceInterface = {
   loadBackendTrack (trackAudioManager) {
