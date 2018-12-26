@@ -78,42 +78,72 @@ function secondsToTimeString(timeInSeconds) {
  */
 function renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, color) {
     d3.json(fname, function(error, data) {
-          var bpm01=data.bpm;
-          bpm01 = d3.format(".0f")(bpm01)
-          var beatListArray=data.beat_list;
-          var xMin= d3.min(beatListArray);
-          var xMax= d3.max(beatListArray);
+        var bpm01=data.bpm;
+        bpm01 = d3.format(".0f")(bpm01)
+        var beatListArray=data.beat_list;
+        var xMin= d3.min(beatListArray);
+        var xMax= d3.max(beatListArray);
 
-          var axisScale = d3.scaleLinear()
-                            .domain([xMin,xMax])
-                            .range([0,1000]);
-          var xScale = 1000/xMax;
-          var xStart = xScale*beatListArray[0];
-          var xAxis = d3.axisBottom().scale(axisScale);
+        var axisScale = d3.scaleLinear()
+                           .domain([xMin,xMax])
+                           .range([0,1000]);
+        var xScale = 1000/xMax;
+        var xStart = xScale*beatListArray[0];
+        var xAxis = d3.axisBottom().scale(axisScale);
 
-          trackDisplayGroup.append("g")
-              .attr('transform', function(d) {return 'translate('+xStart+',' + trackBottomY + ')';})
-              .call(xAxis);
+        trackDisplayGroup.append("g")
+            .attr('transform', function(d) {return 'translate('+xStart+',' + trackBottomY + ')';})
+            .call(xAxis);
 
-          var tString = secondsToTimeString(xMax);
-          trackDisplayGroup.append('text')
-              .attr('x', 10).attr('y', trackTopY - 5)
-              .style('fill', color)
-              .style('font-size', '12px')
-              .style('font-weight', 'bold')
-              .text(fname + ';  Duration = ' + tString + ';  bpm= '+ bpm01 );
+        var tString = secondsToTimeString(xMax);
+        trackDisplayGroup.append('text')
+            .attr('x', 10).attr('y', trackTopY - 5)
+            .style('fill', color)
+            .style('font-size', '12px')
+            .style('font-weight', 'bold')
+            .text(fname + ';  Duration = ' + tString + ';  bpm= '+ bpm01 );
 
-          var trackLinesGroup = trackDisplayGroup.append('g');
-
-          var beatLines = trackLinesGroup.selectAll('line')
-                  .data(beatListArray);
-          beatLines.enter().append('line')
-              .style('stroke', color)
-              .attr('stroke-width', 1)
-              .attr('x1', function(d) {return d*xScale})
-              .attr('x2', function(d) {return d*xScale})
-              .attr('y1', trackTopY)
-              .attr('y2', trackBottomY);
-          beatLines.exit().remove();
+        renderTrackBeats(
+          trackDisplayGroup, beatListArray, color, trackTopY, trackBottomY,
+          xMax, xScale);
     });
+}
+
+
+function renderTrackBeats(
+        trackDisplayGroup, beatListArray, color, trackTopY, trackBottomY, xMax,
+        xScale) {
+    // Add lines
+    var trackLinesGroup = trackDisplayGroup.append('g');
+    trackLinesGroup.call(
+      d3.drag()
+        .on('drag', dragged)
+    );
+
+    // Add background rectangle to group for continuous hit area for
+    // dragging
+    var trackBkgrnd = trackLinesGroup.append('rect');
+    trackBkgrnd.attr('fill', 'lightgrey');
+    trackBkgrnd.attr('x', 10);
+    trackBkgrnd.attr('y', trackTopY);
+    trackBkgrnd.attr('width', xMax);
+    trackBkgrnd.attr('height', trackBottomY - trackTopY);
+
+    var beatLines = trackLinesGroup.selectAll('line')
+            .data(beatListArray);
+    beatLines.enter().append('line')
+        .style('stroke', color)
+        .attr('stroke-width', 1)
+        .attr('x1', function(d) {return d*xScale})
+        .attr('x2', function(d) {return d*xScale})
+        .attr('y1', trackTopY)
+        .attr('y2', trackBottomY);
+    beatLines.exit().remove();
+}
+
+/**
+ * @param d: undefined
+ */
+function dragged(d) {
+  d3.select(this).attr("transform", 'translate('+d3.event.x+','+this.getCTM().f+')');
 }
