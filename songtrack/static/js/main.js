@@ -51,7 +51,8 @@ trackInputInfoList.forEach(function(trackInputInfo, i) {
     var trackTopY = i * (trackPaddingPx + trackHeightPx) + trackPaddingPx;
     var trackBottomY = trackTopY + trackHeightPx;
 
-    var trackDisplayGroup = svg.append('g')
+    var trackDisplayGroup = svg.append('g');
+    trackDisplayGroup.attr('class', 'trackDisplayGroup');
 
     renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, color);
 });
@@ -88,43 +89,45 @@ function renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, c
                            .domain([xMin,xMax])
                            .range([0,1000]);
         var xScale = 1000/xMax;
-        var xStart = xScale*beatListArray[0];
         var xAxis = d3.axisBottom().scale(axisScale);
 
         trackDisplayGroup.append("g")
-            .attr('transform', function(d) {return 'translate('+xStart+',' + trackBottomY + ')';})
+            .attr('transform', function(d) {return 'translate(0,' + trackBottomY + ')';})
             .call(xAxis);
 
         var tString = secondsToTimeString(xMax);
         trackDisplayGroup.append('text')
-            .attr('x', 10).attr('y', trackTopY - 5)
+            .attr('y', trackTopY - 5)
             .style('fill', color)
             .style('font-size', '12px')
             .style('font-weight', 'bold')
             .text(fname + ';  Duration = ' + tString + ';  bpm= '+ bpm01 );
 
-        renderTrackBeats(
-          trackDisplayGroup, beatListArray, color, trackTopY, trackBottomY,
+        var trackLinesGroup = trackDisplayGroup.append('g');
+        renderDraggableTrack(
+          trackLinesGroup, beatListArray, color, trackTopY, trackBottomY,
           xMax, xScale);
     });
 }
 
 
-function renderTrackBeats(
-        trackDisplayGroup, beatListArray, color, trackTopY, trackBottomY, xMax,
+function renderDraggableTrack(
+        trackLinesGroup, beatListArray, color, trackTopY, trackBottomY, xMax,
         xScale) {
+
     // Add lines
-    var trackLinesGroup = trackDisplayGroup.append('g');
+    trackLinesGroup.attr('class', 'trackLinesGroup');
     trackLinesGroup.call(
       d3.drag()
         .on('drag', dragged)
+        .subject(setSubject)
     );
 
     // Add background rectangle to group for continuous hit area for
     // dragging
     var trackBkgrnd = trackLinesGroup.append('rect');
     trackBkgrnd.attr('fill', 'lightgrey');
-    trackBkgrnd.attr('x', 10);
+    trackBkgrnd.attr('class', 'dragRect');
     trackBkgrnd.attr('y', trackTopY);
     trackBkgrnd.attr('width', xMax);
     trackBkgrnd.attr('height', trackBottomY - trackTopY);
@@ -142,8 +145,34 @@ function renderTrackBeats(
 }
 
 /**
+ * Set the subject's x and y coordinates that we're dragging.
+ * This should be the Track Lines Group <g> element which includes the track
+ * beat lines and the background hit area <rect>
+ */
+function setSubject() {
+  var baseX = this.getCTM().e;
+  var baseY = this.getCTM().f;
+
+  return {
+    x: d3.event.x,
+    y: d3.event.y,
+    baseX: baseX,
+    baseY: baseY,
+  };
+}
+
+/**
  * @param d: undefined
  */
-function dragged(d) {
-  d3.select(this).attr("transform", 'translate('+d3.event.x+','+this.getCTM().f+')');
+function dragged() {
+  var newX = d3.event.subject.baseX + (d3.event.x - d3.event.subject.x);
+
+  d3.select(this).attr(
+    "transform",
+    'translate('
+    + newX
+    + ','
+    + d3.event.subject.baseY
+    +')'
+  );
 }
