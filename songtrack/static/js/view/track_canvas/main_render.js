@@ -29,8 +29,45 @@ export const TrackCanvasInterface = {
 
       renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, color);
     });
+
+    renderPlayCursor(svg);
+
+    bindSvgEventHandlers(svg);
   }
 };
+
+
+/**
+ * Central function for defining event handling on SVG element.  We centralize
+ * SVG event handling here so it will be easy to see and manage possible
+ * different events we want to have.
+ */
+function bindSvgEventHandlers(mainSvgEl) {
+  // Play Cursor is a <rect> element with id "playCursorRect". Using HTML id
+  // attr because there should only be one cursor.
+  var playCursorRect = mainSvgEl.select('#playCursorRect');
+  mainSvgEl.on('mousedown', function() {
+    playCursorRect.attr('destX', d3.event.offsetX);
+  });
+  mainSvgEl.on('mouseup', function() {
+    var x = playCursorRect.attr('destX');
+    playCursorRect.attr('x', x);
+  });
+}
+
+
+/**
+ * Render the blinking play cursor initially at position 0
+ * @param mainSvgEl: main SVG element to draw on
+ */
+function renderPlayCursor(mainSvgEl) {
+  var playCursorRect = mainSvgEl.append('rect');
+  playCursorRect.attr('id', 'playCursorRect');
+  playCursorRect.attr('height', mainSvgEl.attr('height'));
+  playCursorRect.attr('width', 2);
+  playCursorRect.attr('fill', 'blue');
+};
+
 
 /**
  * @param {svg group} trackDisplayGroup: SVG group that the track info should be created in
