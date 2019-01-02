@@ -206,8 +206,8 @@ function renderMethodStepByStep(trackInfoList) {
   // Here we take all the <rect> elements and we add attributes to them.
   rectElements.attr('fill', 'black')
         .attr('width', 2)
-        .attr('height', 90)
-        .attr('x', function(d, i) {return d*8;});
+        .attr('height', function(d) {return d;})
+        .attr('x', function(d, i) {return i*8;});
 }
 
 

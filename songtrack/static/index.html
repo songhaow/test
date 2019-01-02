@@ -4,25 +4,24 @@
   <head>
     <meta charset="utf-8utf-8">
     <title>D3.js</title>
-    <link rel="stylesheet" type="text/css" href="css/tracks-sw.css">
-    <script type="text/javascript" src="js/vendor/d3.v4.js"></script>
-    <!-- <h2>D3.js for Song Track</h2> -->
+    <link rel="stylesheet" type="text/css" href="static/css/tracks-sw.css">
+    <script type="text/javascript" src="static/js/vendor/d3.v4.js"></script>
   </head>
 
   <body>
-    <!-- <div id="chartForTrack"></div> -->
-      <svg width=100% height="300" style="border: 1px solid blue;"></svg>
-      <!-- <div id="displayButton">hit me</div> -->
-      <!-- <input type="button" value="Pause" onclick="document.getElementById("track1").pause()">
-      <input type="button" value="Raise volume" onclick="document.getElementById("track1").volume+=0.1">
-      <input type="button" value="Reduce volume" onclick="document.getElementById("track1").volume-=0.1"> -->
+    <h3> Track Editor </h3>
+    <svg width=100% height="300" style="border: 1px solid blue;"></svg>
 
-     <button id='play1Button'> Play track1 </button>
-     <button id='pause1Button'> Pause track1 </button>
+    <button id="play1Button"> Play track1 </button>
+    <button id="pause1Button"> Pause track1 </button>
 
-     <h3>tracks-sw.js</h3>
+    <br/>
+    <br/>
+
+    <input id="zoomSlider" type="range" min="0" max="100" value="0"/>
+
   </body>
 
-  <script src="js/main.js" type="module"></script>
+  <script src="static/js/main.js" type="module"></script>
 
 </html>
