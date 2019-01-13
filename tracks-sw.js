@@ -13,7 +13,6 @@ var resetAudioSource = (audioBuffer) => {
   audioSource.connect(audioCtx.destination);
 };
 
-
 document.querySelector('#play1Button').onclick = function() {
   audioSource.start(0, 30);
 };
@@ -21,7 +20,6 @@ document.querySelector('#pause1Button').onclick = function() {
   audioSource.stop();
   resetAudioSource(track1AudioBuffer);
 };
-
 
 var xhr = new XMLHttpRequest();
 xhr.open('GET', 'http://localhost:8080/song', true);
@@ -37,7 +35,6 @@ xhr.onload = function () {
   )
 };
 xhr.send();
-
 
 var trackInputInfoList =  [
     {
@@ -62,6 +59,8 @@ trackInputInfoList.forEach(function(trackInputInfo, i) {
     var trackBottomY = trackTopY + trackHeightPx;
 
     var trackDisplayGroup = svg.append('g')
+    // var beatListArray = [];
+    // console.log(beatListArray);
 
     renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, color);
 });
@@ -87,10 +86,12 @@ function secondsToTimeString(timeInSeconds) {
  * @param {String}    color: Color to render track in
  */
 function renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, color) {
+    // var beatListArray=[];
     d3.json(fname, function(error, data) {
           var bpm01=data.bpm;
           bpm01 = d3.format(".0f")(bpm01)
           var beatListArray=data.beat_list;
+          // console.log(beatListArray);
           var xMin= d3.min(beatListArray);
           var xMax= d3.max(beatListArray);
 
@@ -125,5 +126,8 @@ function renderAllTrackInfo(trackDisplayGroup, fname, trackTopY, trackBottomY, c
               .attr('y1', trackTopY)
               .attr('y2', trackBottomY);
           beatLines.exit().remove();
+
+          // console.log(beatListArray);
+          // return beatListArray;
     });
 }
