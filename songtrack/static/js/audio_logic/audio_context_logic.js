@@ -26,7 +26,7 @@ export class TrackAudioManager {
     if (this.audioSource1 === null) {
       this.resetTrackSource1();
     }
-    this.audioSource1.start(0);
+    this.audioSource1.start(0); //this start look like delay in seconds
   }
 
   stopTrack1 () {

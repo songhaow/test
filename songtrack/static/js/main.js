@@ -1,7 +1,7 @@
 // Import commands allow us to import functions and modules from other
 // javascript files -- like we do in python
 import {AudioSourceInterface} from '/static/js/api/audio_source.js';
-import {TrackAudioManager} from '/static/js/audio_logic/audio_context_logic.js';
+import {TrackAudioManager}    from '/static/js/audio_logic/audio_context_logic.js';
 import {TrackCanvasInterface} from '/static/js/view/track_canvas/main_render.js';
 
 /**
