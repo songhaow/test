@@ -1,5 +1,11 @@
 import {TimeUtil} from '/static/js/view/utils/time_util.js';
 
+var POSITION_INFO = {
+  track2PosX: 0,
+  cursorPosX: 0,
+};
+
+
 export const TrackCanvasInterface = {
   initialRender() {
     // This is the original code to render the UI interface
@@ -13,7 +19,6 @@ export const TrackCanvasInterface = {
         fname: '/static/source_audio/02-SW-062018.txt',
       },
     ];
-
     var svg = d3.select('svg');
 
     rerenderTracks(svg, trackInputInfoList);
@@ -21,9 +26,37 @@ export const TrackCanvasInterface = {
     renderPlayCursor(svg);
 
     bindEventHandlers(svg, trackInputInfoList);
+  },
+
+  getCursorPosPx() {
+    return POSITION_INFO.cursorPosX;
+  },
+
+  getTrack2PosPx() {
+    return POSITION_INFO.track2PosX;
+  },
+
+  getTrackLengthPx() {
+    return 1000;
+  },
+
+  getTrackLengthSec() {
+    return 180;
+  },
+
+  getTrack2OffsetMS() {
+    d3.json('/static/source_audio/02-SW-062018.txt', function(error, data) {
+      var beatListArray = data.beat_list;
+
+      var xMax = d3.max(beatListArray);
+      var xScale = 1000/xMax;
+      xMax = d3.max(beatListArray) * xScale;
+      console.log('xmax: ' + xMax);
+
+      return POSITION_INFO.track2PosX / xMax;
+    });
   }
 };
-
 
 /**
  * Central function for defining event handling on SVG element.  We centralize
@@ -40,6 +73,7 @@ function bindEventHandlers(mainSvgEl, trackInputInfoList) {
   mainSvgEl.on('mouseup', function() {
     var x = playCursorRect.attr('destX');
     playCursorRect.attr('x', x);
+    POSITION_INFO.cursorPosX = x;
   });
 
   // Zoom event handler bindings
@@ -135,6 +169,7 @@ function renderDraggableTrack(
   trackLinesGroup.call(
     d3.drag()
       .on('drag', dragged)
+      .on('end', dragEnded)
       .subject(setDragSubject)
   );
 
@@ -190,4 +225,10 @@ function dragged() {
     + d3.event.subject.baseY
     +')'
   );
+}
+
+
+function dragEnded() {
+  POSITION_INFO.track2PosX =
+    d3.event.subject.baseX + (d3.event.x - d3.event.subject.x);
 }

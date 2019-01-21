@@ -11,14 +11,39 @@ import {TrackCanvasInterface} from '/static/js/view/track_canvas/main_render.js'
  */
 var trackAudioManager = new TrackAudioManager();
 
+
+// // When the user presses the play / stop button, we tell the
+// // trackAudioManager instance what to do.
+// document.querySelector('#play1Button').onclick = function() {
+//   trackAudioManager.playTrack1(TrackCanvasInterface.getTrack2OffsetMS());
+// };
+// document.querySelector('#pause1Button').onclick = function() {
+//   trackAudioManager.stopTrack1();
+// };
+
+
 // When the user presses the play / stop button, we tell the
 // trackAudioManager instance what to do.
 document.querySelector('#play1Button').onclick = function() {
-  trackAudioManager.playTrack1();
+  var cursorPosPx = TrackCanvasInterface.getCursorPosPx();
+  var trackPosPx = TrackCanvasInterface.getTrack2PosPx();
+  var trackLengthPx = TrackCanvasInterface.getTrackLengthPx();
+  var trackLengthSec = TrackCanvasInterface.getTrackLengthSec();
+
+  var startOffsetPx = cursorPosPx - trackPosPx;
+  if (startOffsetPx < 0) {
+    startOffsetPx = 0;
+  }
+
+  var numSecIn = (startOffsetPx / trackLengthPx) * trackLengthSec;
+
+  trackAudioManager.playTrack1(numSecIn);
 };
 document.querySelector('#pause1Button').onclick = function() {
   trackAudioManager.stopTrack1();
 };
+
+
 
 /**
  * Here, we make a call to the python flask server to get the track
