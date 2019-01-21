@@ -22,11 +22,14 @@ export class TrackAudioManager {
     this.audioSource1.connect(audioCtx.destination);
   }
 
-  playTrack1 () {
+  playTrack1 (playOffsetSec) {
+    if (typeof(playOffsetSec) === 'undefined') {
+      playOffsetSec = 0;
+    }
     if (this.audioSource1 === null) {
       this.resetTrackSource1();
     }
-    this.audioSource1.start(0);
+    this.audioSource1.start(0, playOffsetSec);
   }
 
   stopTrack1 () {
